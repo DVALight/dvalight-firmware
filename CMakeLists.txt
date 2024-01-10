@@ -36,7 +36,13 @@ endif()
 add_subdirectory(../stm32-enc28j60 stm32-enc28j60)
 
 add_executable(dvalight-firmware ${SOURCES} ${HEADERS})
-target_include_directories(dvalight-firmware PRIVATE # change to PUBLIC if you're making library
+# we do this to hide sensitive information like MAC address
+target_compile_definitions(dvalight-firmware PRIVATE
+    REMOTE_MAC_STR="$ENV{LOCAL_MAC}"
+    REMOTE_IP_STR="$ENV{LOCAL_IP}" 
+)
+
+target_include_directories(dvalight-firmware PRIVATE
     src
 )
 
