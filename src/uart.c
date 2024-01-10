@@ -26,7 +26,7 @@ int __io_getchar(void)
   return ch;
 }
 
-void UART_Init(void)
+int UART_Init(void)
 {
-    HAL_UART_Init(&huart1);
+  return HAL_UART_Init(&huart1) == HAL_OK ? 0 : -1;
 }
