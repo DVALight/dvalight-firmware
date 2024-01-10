@@ -20,7 +20,7 @@ set(HEADERS
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 #set(HAL_COMP_LIST RCC GPIO CORTEX)
-list(APPEND HAL_COMP_LIST STM32F4)
+list(APPEND HAL_COMP_LIST STM32F4 RCC GPIO UART CORTEX)
 list(APPEND CMSIS_COMP_LIST "STM32F4")
 
 if(NOT STM32_CMAKE_PACKAGES)
@@ -35,8 +35,9 @@ target_include_directories(dvalight-firmware PRIVATE # change to PUBLIC if you'r
 )
 
 target_link_libraries(dvalight-firmware
-#    HAL::STM32::F4::RCC
-#    HAL::STM32::F4::GPIO
+    HAL::STM32::F4::RCC
+    HAL::STM32::F4::GPIO
+    HAL::STM32::F4::UART
     HAL::STM32::F4::CORTEX
     CMSIS::STM32::F401VE
     STM32::NoSys
