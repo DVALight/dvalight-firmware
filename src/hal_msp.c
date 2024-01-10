@@ -33,3 +33,26 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
         HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9 | GPIO_PIN_10);
     }
 }
+
+void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
+{
+    if (hspi->Instance == SPI1)
+    {
+        __HAL_RCC_SPI1_CLK_ENABLE();
+
+        HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
+            .Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,
+            .Mode = GPIO_MODE_AF_PP,
+            .Speed = GPIO_SPEED_FREQ_VERY_HIGH,
+            .Alternate = GPIO_AF5_SPI1
+        });
+    }
+}
+
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
+{
+    if (hspi->Instance == SPI1)
+    {
+        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+    }
+}
