@@ -3,42 +3,14 @@
 #include "stm32f4xx_hal.h"
 #include "hal_isr.h"
 
-void NMI_Handler(void)
-{
-  while (1) {}
-}
-
-void HardFault_Handler(void)
-{
-  while (1) {}
-}
-
-void MemManage_Handler(void)
-{
-  while (1) {}
-}
-
-void BusFault_Handler(void)
-{
-  while (1) {}
-}
-
-void UsageFault_Handler(void)
-{
-  while (1) {}
-}
-
-void SVC_Handler(void)
-{
-}
-
-void DebugMon_Handler(void)
-{
-}
-
-void PendSV_Handler(void)
-{
-}
+ISR_DUMMY_HANDLER_PRINTF_NORET(NMI)
+ISR_DUMMY_HANDLER_PRINTF_NORET(HardFault)
+ISR_DUMMY_HANDLER_PRINTF_NORET(MemManage)
+ISR_DUMMY_HANDLER_PRINTF_NORET(BusFault)
+ISR_DUMMY_HANDLER_PRINTF_NORET(UsageFault)
+ISR_DUMMY_HANDLER_PRINTF(SVC)
+ISR_DUMMY_HANDLER_PRINTF(DebugMon)
+ISR_DUMMY_HANDLER_PRINTF(PendSV)
 
 void SysTick_Handler(void)
 {
