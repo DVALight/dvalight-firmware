@@ -22,7 +22,7 @@ set(HEADERS
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 #set(HAL_COMP_LIST RCC GPIO CORTEX)
-list(APPEND HAL_COMP_LIST STM32F4 RCC GPIO UART CORTEX)
+list(APPEND HAL_COMP_LIST STM32F4 RCC GPIO UART SPI CORTEX)
 list(APPEND CMSIS_COMP_LIST "STM32F4")
 
 if(NOT STM32_CMAKE_PACKAGES)
@@ -31,15 +31,19 @@ if(NOT STM32_CMAKE_PACKAGES)
     set(STM32_CMAKE_PACKAGES 1)
 endif()
 
+add_subdirectory(../stm32-enc28j60 stm32-enc28j60)
+
 add_executable(dvalight-firmware ${SOURCES} ${HEADERS})
 target_include_directories(dvalight-firmware PRIVATE # change to PUBLIC if you're making library
     src
 )
 
 target_link_libraries(dvalight-firmware
+    stm32-enc28j60
     HAL::STM32::F4::RCC
     HAL::STM32::F4::GPIO
     HAL::STM32::F4::UART
+    HAL::STM32::F4::SPI
     HAL::STM32::F4::CORTEX
     CMSIS::STM32::F401VE
     STM32::NoSys
