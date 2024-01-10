@@ -10,11 +10,13 @@ set(SOURCES
     src/hal_isr.c
     src/hal_msp.c
     src/main.c
+    src/uart.c
 )
 
 set(HEADERS
     src/stm32f4xx_hal_conf.h
     src/hal_isr.h
+    src/uart.h
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
