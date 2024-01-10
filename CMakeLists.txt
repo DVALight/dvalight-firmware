@@ -9,14 +9,16 @@ set(SOURCES
     src/core/sysmem.c
     src/hal_isr.c
     src/hal_msp.c
-    src/main.c
     src/uart.c
+    src/network.c
+    src/main.c
 )
 
 set(HEADERS
     src/stm32f4xx_hal_conf.h
     src/hal_isr.h
     src/uart.h
+    src/network.h
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
