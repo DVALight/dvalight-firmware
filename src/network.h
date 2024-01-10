@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-extern uint8_t g_LocalMAC[6];
-extern uint8_t g_LocalIP[4];
+extern uint8_t g_LocalMAC[6], g_LocalIP[4];
+extern uint8_t g_RemoteMAC[6], g_RemoteIP[4];
 
 int NET_Init(void);
 

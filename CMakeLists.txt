@@ -38,6 +38,8 @@ add_subdirectory(../stm32-enc28j60 stm32-enc28j60)
 add_executable(dvalight-firmware ${SOURCES} ${HEADERS})
 # we do this to hide sensitive information like MAC address
 target_compile_definitions(dvalight-firmware PRIVATE
+    LOCAL_MAC_STR="02:03:04:d4:c8:10"
+    LOCAL_IP_STR="192.168.100.169"
     REMOTE_MAC_STR="$ENV{LOCAL_MAC}"
     REMOTE_IP_STR="$ENV{LOCAL_IP}" 
 )
