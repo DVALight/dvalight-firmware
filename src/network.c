@@ -32,6 +32,11 @@ void NET_ParseIP(uint8_t* ip, const char* ipStr)
     &ip[0], &ip[1], &ip[2], &ip[3]);
 }
 
+void ES_PingCallback(void)
+{
+  printf("ES_PingCallback\r\n");
+}
+
 int NET_Init(void)
 {
   HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
