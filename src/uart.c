@@ -1,5 +1,6 @@
 #include "uart.h"
 #include "stm32f4xx_hal.h"
+#include <stdio.h>
 
 UART_HandleTypeDef huart1 = {
   .Instance = USART1,
@@ -29,4 +30,18 @@ int __io_getchar(void)
 int UART_Init(void)
 {
   return HAL_UART_Init(&huart1) == HAL_OK ? 0 : -1;
+}
+
+void UART_HexDump(const uint8_t* data, uint16_t len, unsigned cols)
+{
+  for (uint16_t i = 0; i < len; i++)
+  {
+    if (i && i % cols == 0)
+    {
+      printf("\r\n");
+    }
+
+    printf("%02x ", data[i]);
+  }
+  printf("\r\n");
 }
