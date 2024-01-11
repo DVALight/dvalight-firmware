@@ -25,7 +25,9 @@ int main(void)
     Failure_Hang_Loop();
   }
 
-  printf("Hello World!\r\n");
-
-  while (1) {}
+  while (1)
+  {
+    NET_SendUDP(g_RemoteIP, 61337, 1337, (const uint8_t*)"Hello World!\r\n", 15);
+    HAL_Delay(500);
+  }
 }

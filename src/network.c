@@ -1,6 +1,7 @@
 #include "network.h"
 #include "stm32f4xx_hal.h"
 #include "EtherShield.h"
+#include <string.h>
 
 SPI_HandleTypeDef hspi1 = {
   .Instance = SPI1,
@@ -33,6 +34,12 @@ void NET_ParseIP(uint8_t* ip, const char* ipStr)
 
 int NET_Init(void)
 {
+  HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
+    .Pin = ETHERNET_CS_PIN | ETHERNET_LED_PIN,
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Speed = GPIO_SPEED_LOW
+  });
+
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     return -1;
@@ -47,7 +54,17 @@ int NET_Init(void)
   ES_enc28j60SpiInit(&hspi1);
   ES_enc28j60Init(g_LocalMAC);
 
-  ES_init_ip_arp_udp_tcp(g_LocalMAC, g_RemoteIP, 80);
+  ES_init_ip_arp_udp_tcp(g_LocalMAC, g_LocalIP, 80);
 
   return 0;
+}
+
+void NET_SendUDP(uint8_t* ip, uint16_t sport, uint16_t dport,
+  const uint8_t* payload, unsigned size)
+{
+  static uint8_t net_buffer[1500];
+  
+  memcpy(&net_buffer[UDP_DATA_P], payload, size);
+
+  ES_send_udp_data2(net_buffer, g_RemoteMAC, size, sport, ip, dport);
 }
