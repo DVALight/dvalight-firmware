@@ -61,6 +61,10 @@ int NET_Init(void)
 
   ES_init_ip_arp_udp_tcp(g_LocalMAC, g_LocalIP, 80);
 
+  uint8_t gwip[4];
+  NET_ParseIP(gwip, "192.168.100.1");
+  client_set_gwip(gwip);
+
   return 0;
 }
 
