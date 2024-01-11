@@ -27,4 +27,6 @@ ISR_HANDLER(DebugMon);
 ISR_HANDLER(PendSV);
 ISR_HANDLER(SysTick);
 
+void EXTI1_IRQHandler(void);
+
 #endif
