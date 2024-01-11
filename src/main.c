@@ -15,20 +15,28 @@ void Failure_Hang_Loop(void)
 
 void EXTI1_IRQHandler(void)
 {
-  printf("EXTI1_IRQHandler\r\n");
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+}
 
-  // disable enc interrupts
-  enc28j60WriteOp(ENC28J60_BIT_FIELD_CLR, EIE, EIE_INTIE);
-
-  uint8_t eir = enc28j60ReadOp(ENC28J60_READ_CTRL_REG, EIR);
-  if (eir & EIR_PKTIF)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  if (GPIO_Pin == GPIO_PIN_1)
   {
-    printf("EXTI1: EIR_PKTIF - packet received\r\n");
-    printf("EPKTCNT: %u\r\n", enc28j60Read(EPKTCNT));
-  }
+    printf("HAL_GPIO_EXTI_Callback\r\n");
 
-  // enable enc interrupts
-  enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_INTIE);
+    // disable enc interrupts
+    enc28j60WriteOp(ENC28J60_BIT_FIELD_CLR, EIE, EIE_INTIE);
+
+    uint8_t eir = enc28j60ReadOp(ENC28J60_READ_CTRL_REG, EIR);
+    if (eir & EIR_PKTIF)
+    {
+      printf("EXTI1: EIR_PKTIF - packet received\r\n");
+      printf("EPKTCNT: %u\r\n", enc28j60Read(EPKTCNT));
+    }
+
+    // enable enc interrupts
+    enc28j60WriteOp(ENC28J60_BIT_FIELD_SET, EIE, EIE_INTIE);
+  }
 }
 
 int main(void)
@@ -49,7 +57,7 @@ int main(void)
   // EXTI1 line
   HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
     .Pin = GPIO_PIN_1,
-    .Mode = GPIO_MODE_IT_FALLING,
+    .Mode = GPIO_MODE_IT_RISING,
     .Pull = GPIO_NOPULL
   });
   // BUG: such priority could shadow SysTick interrupt causing SPI HAL not working
