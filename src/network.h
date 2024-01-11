@@ -11,6 +11,7 @@ void NET_ParseIP(uint8_t* ip, const char* ipStr);
 
 int NET_Init(void);
 
+extern uint8_t g_NetBuf[1500];;
 void NET_SendUDP(uint8_t* ip, uint16_t sport, uint16_t dport,
   const uint8_t* payload, unsigned size);
 
