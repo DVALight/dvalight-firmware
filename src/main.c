@@ -55,6 +55,9 @@ int main(void)
     Failure_Hang_Loop();
   }
 
+  // first loop iteration to init everything up
+  packetloop_icmp_tcp(g_NetBuf, 0);
+
   printf("Init OK\r\n");
 
   while (1)
@@ -63,10 +66,13 @@ int main(void)
     {
       printf("g_PktIf\r\n");
 
-      uint16_t pos = packetloop_icmp_tcp(g_NetBuf,
-        ES_enc28j60PacketReceive(sizeof(g_NetBuf), g_NetBuf));
-      printf("pos %u\r\n", pos);
-
+      while (enc28j60Read(EPKTCNT)) // process all packets
+      {
+        uint16_t pos = packetloop_icmp_tcp(g_NetBuf,
+          ES_enc28j60PacketReceive(sizeof(g_NetBuf), g_NetBuf));
+        printf("pos %u\r\n", pos);
+      }
+      
       g_PktIF = 0;
     }
   }
