@@ -66,5 +66,10 @@ int main(void)
     if (!pos) continue;
     printf("udp pos %u len %u\r\n", pos, len);
     UART_HexDump(&g_NetBuf[pos], len, 8);
+
+    if (g_NetBuf[pos] == 'A')
+    {
+      make_udp_reply_from_request(g_NetBuf, (char*)"Hello World!\r\n", 15, 1337);
+    }
   }
 }
