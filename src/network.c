@@ -68,7 +68,7 @@ int NET_Init(void)
   return 0;
 }
 
-uint8_t g_NetBuf[1500];
+uint8_t g_NetBuf[DVA_NETBUF_SIZE];
 
 void NET_SendUDP(uint8_t* ip, uint16_t sport, uint16_t dport,
   const uint8_t* payload, unsigned size)
