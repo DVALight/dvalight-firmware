@@ -17,6 +17,7 @@ set(SOURCES
 set(HEADERS
     src/stm32f4xx_hal_conf.h
     src/hal_isr.h
+    src/dva.h
     src/uart.h
     src/network.h
 )
