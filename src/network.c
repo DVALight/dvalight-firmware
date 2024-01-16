@@ -68,12 +68,12 @@ int NET_Init(void)
   return 0;
 }
 
-uint8_t g_NetBuf[DVA_NETBUF_SIZE];
+uint8_t NET[DVA_NETBUF_SIZE];
 
 void NET_SendUDP(uint8_t* ip, uint16_t sport, uint16_t dport,
   const uint8_t* payload, unsigned size)
 {
-  memcpy(&g_NetBuf[UDP_DATA_P], payload, size);
+  memcpy(&NET[UDP_DATA_P], payload, size);
 
-  ES_send_udp_data2(g_NetBuf, g_RemoteMAC, size, sport, ip, dport);
+  ES_send_udp_data2(NET, g_RemoteMAC, size, sport, ip, dport);
 }

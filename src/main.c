@@ -17,25 +17,24 @@ void Failure_Hang_Loop(void)
 uint16_t packetloop()
 {
   uint16_t plen = NET_ReceivePacket();
-  if (eth_type_is_arp_and_my_ip(NET_BUF, plen))
+  if (eth_type_is_arp_and_my_ip(NET, plen))
   {
-    if (NET_BUF[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
+    if (NET_ARP_IS_REQUEST())
     {
-      make_arp_answer_from_request(NET_BUF);
+      make_arp_answer_from_request(NET);
     }
   }
 
-  if (eth_type_is_ip_and_my_ip(NET_BUF, plen))
+  if (eth_type_is_ip_and_my_ip(NET, plen))
   {
     // ICMP
-    if (NET_BUF[IP_PROTO_P] == IP_PROTO_ICMP_V 
-      && NET_BUF[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
+    if (NET_PROTO_IS(IP_PROTO_ICMP_V) && NET[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
     {
-      make_echo_reply_from_request(NET_BUF, plen);
+      make_echo_reply_from_request(NET, plen);
     }
-    else if (NET_BUF[IP_PROTO_P] == IP_PROTO_UDP_V)
+    else if (NET_PROTO_IS(IP_PROTO_UDP_V))
     {
-      return get_udp_data_len(NET_BUF);
+      return get_udp_data_len(NET);
     }
   }
 
