@@ -24,5 +24,6 @@ void NET_SendUDP(uint16_t len);
 
 // returns udp data length if its udp packet
 uint16_t NET_PacketLoop();
+uint8_t NET_IsReady();
 
 #endif

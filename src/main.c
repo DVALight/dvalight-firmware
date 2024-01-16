@@ -41,7 +41,12 @@ int main(void)
   {
     uint16_t len = NET_PacketLoop();
     if (!len) continue;
-
     printf("len %u\r\n", len);
+
+    if (NET_IsReady())
+    {
+      memcpy(NET_UDP, "Hello World!\r\n", 15);
+      NET_SendUDP(15);
+    }
   }
 }

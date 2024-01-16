@@ -21,7 +21,8 @@ set(HEADERS
     src/network.h
 )
 
-set(DVA_LOCAL_MAC   "$ENV{LOCAL_MAC}"   CACHE INTERNAL "MAC for DVALight device")
+# set(DVA_LOCAL_MAC   "$ENV{LOCAL_MAC}"   CACHE INTERNAL "MAC for DVALight device")
+set(DVA_LOCAL_MAC   "02:03:04:69:69:69"   CACHE INTERNAL "MAC for DVALight device")
 set(DVA_LOCAL_IP    "192.168.100.169"   CACHE INTERNAL "IPv4 address for DVALight device")
 set(DVA_GATEWAY_IP  "192.168.100.1"     CACHE INTERNAL "gateway IPv4 address")
 set(DVA_REMOTE_IP   "$ENV{LOCAL_IP}"    CACHE INTERNAL "back-end IPv4 address")

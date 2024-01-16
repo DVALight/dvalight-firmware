@@ -80,9 +80,12 @@ int NET_Init(void)
 
   ES_init_ip_arp_udp_tcp(g_LocalMAC, g_LocalIP, 80);
 
-  uint8_t gwip[4];
-  NET_StringToIP(gwip, DVA_GATEWAY_IP);
-  client_set_gwip(gwip);
+  printf("flushing: ");
+  while (NET_ReceivePacket())
+  {
+    printf(".");
+  }
+  printf(" - done!\r\n");
 
   return 0;
 }
@@ -106,24 +109,28 @@ static enum {
 // returns udp data length if its udp packet
 uint16_t NET_PacketLoop()
 {
-  if (NET_State == NET_INIT)
-  {
-    client_arp_whohas(NET, g_GatewayIP);
-    NET_State = NET_GATEWAY_ARP_WAITING;
-  }
-
   uint16_t plen = NET_ReceivePacket();
+  if (!plen)
+  {
+    if (NET_State == NET_INIT)
+    {
+      client_arp_whohas(NET, g_GatewayIP);
+      NET_State = NET_GATEWAY_ARP_WAITING;
+    }
+  }
 
   // ARP
   if (eth_type_is_arp_and_my_ip(NET, plen))
   {
     if (NET_ARP_IS_REQUEST())
     {
+      printf("[ARP] request\r\n");
       make_arp_answer_from_request(NET);
     }
     else if (NET_ARP_IS_REPLY())
     {
-      if (!memcmp(&NET[ETH_ARP_SRC_IP_P], g_GatewayIP, 4))
+      printf("[ARP] reply\r\n");
+      if (NET_State == NET_GATEWAY_ARP_WAITING && !memcmp(&NET[ETH_ARP_SRC_IP_P], g_GatewayIP, 4))
       {
         memcpy(g_GatewayMAC, &NET[ETH_ARP_SRC_MAC_P], 6);
         printf("gateway - %s\r\n", NET_MACToString(g_GatewayMAC));
@@ -138,6 +145,7 @@ uint16_t NET_PacketLoop()
     // ICMP
     if (NET_PROTO_IS(IP_PROTO_ICMP_V) && NET[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
     {
+      ES_PingCallback();
       make_echo_reply_from_request(NET, plen);
     }
     // UDP
@@ -151,4 +159,9 @@ uint16_t NET_PacketLoop()
   }
 
   return 0;
+}
+
+uint8_t NET_IsReady()
+{
+  return NET_State == NET_READY;
 }
