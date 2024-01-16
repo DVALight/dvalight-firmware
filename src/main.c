@@ -63,18 +63,20 @@ int main(void)
   // 2. wait for response
   // 3. process response, perform actions described in response
   // 4. repeat
+  NET_SendUDP(g_RemoteIP, 61337, 1337, (const uint8_t*)"Hello World!\r\n", 15);
+
   while (1)
   {
-    uint16_t len = 0;
-    uint16_t pos = packetloop(g_NetBuf,
-      ES_enc28j60PacketReceive(sizeof(g_NetBuf), g_NetBuf), &len);
-    if (!pos) continue;
-    printf("udp pos %u len %u\r\n", pos, len);
-    UART_HexDump(&g_NetBuf[pos], len, 8);
+    // uint16_t len = 0;
+    // uint16_t pos = packetloop(g_NetBuf,
+    //   ES_enc28j60PacketReceive(sizeof(g_NetBuf), g_NetBuf), &len);
+    // if (!pos) continue;
+    // printf("udp pos %u len %u\r\n", pos, len);
+    // UART_HexDump(&g_NetBuf[pos], len, 8);
 
-    if (g_NetBuf[pos] == 'A')
-    {
-      make_udp_reply_from_request(g_NetBuf, (char*)"Hello World!\r\n", 15, 1337);
-    }
+    // if (g_NetBuf[pos] == 'A')
+    // {
+    //   make_udp_reply_from_request(g_NetBuf, (char*)"Hello World!\r\n", 15, 1337);
+    // }
   }
 }
