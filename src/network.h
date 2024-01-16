@@ -13,7 +13,7 @@ void NET_ParseIP(uint8_t* ip, const char* ipStr);
 int NET_Init(void);
 
 extern uint8_t NET[DVA_NETBUF_SIZE];
-#define NET_UDP_DATA          (&NET[UDP_DATA_P])
+#define NET_UDP               (&NET[UDP_DATA_P])
 
 #define NET_PROTO_IS(proto)   (NET[IP_PROTO_P] == (proto))
 #define NET_ARP_IS_REQUEST()  (NET[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
