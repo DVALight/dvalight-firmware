@@ -63,6 +63,8 @@ int main(void)
   // 2. wait for response
   // 3. process response, perform actions described in response
   // 4. repeat
+
+  // we also want resolve gateway and remote MACs with ARP requests
   NET_SendUDP(g_RemoteIP, 61337, 1337, (const uint8_t*)"Hello World!\r\n", 15);
 
   while (1)
