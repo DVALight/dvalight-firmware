@@ -20,16 +20,33 @@ SPI_HandleTypeDef hspi1 = {
 uint8_t g_LocalMAC[6], g_LocalIP[4];
 uint8_t g_RemoteMAC[6], g_RemoteIP[4];
 
-void NET_ParseMAC(uint8_t* mac, const char* macStr)
+void NET_StringToMAC(uint8_t* mac, const char* macStr)
 {
   sscanf(macStr, "%02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx",
     &mac[0], &mac[1], &mac[2], &mac[3], &mac[4], &mac[5]);
 }
 
-void NET_ParseIP(uint8_t* ip, const char* ipStr)
+void NET_StringToIP(uint8_t* ip, const char* ipStr)
 {
   sscanf(ipStr, "%hhd.%hhd.%hhd.%hhd",
     &ip[0], &ip[1], &ip[2], &ip[3]);
+}
+
+const char* NET_MACToString(const uint8_t* mac)
+{
+  //00:00:00:00:00:00.
+  static char macStr[18];
+  sprintf(macStr, "%02x:%02x:%02x:%02x:%02x:%02x",
+    mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  return macStr;
+}
+
+const char* NET_IPToString(const uint8_t* ip)
+{
+  //000.000.000.000.
+  static char ipStr[16];
+  sprintf(ipStr, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
+  return ipStr;
 }
 
 void ES_PingCallback(void)
@@ -50,11 +67,11 @@ int NET_Init(void)
     return -1;
   }
 
-  NET_ParseMAC(g_LocalMAC, DVA_LOCAL_MAC);
-  NET_ParseIP(g_LocalIP, DVA_LOCAL_IP);
+  NET_StringToMAC(g_LocalMAC, DVA_LOCAL_MAC);
+  NET_StringToIP(g_LocalIP, DVA_LOCAL_IP);
 
-  NET_ParseMAC(g_RemoteMAC, DVA_REMOTE_MAC);
-  NET_ParseIP(g_RemoteIP, DVA_REMOTE_IP);
+  NET_StringToMAC(g_RemoteMAC, DVA_REMOTE_MAC);
+  NET_StringToIP(g_RemoteIP, DVA_REMOTE_IP);
 
   ES_enc28j60SpiInit(&hspi1);
   ES_enc28j60Init(g_LocalMAC);
@@ -62,7 +79,7 @@ int NET_Init(void)
   ES_init_ip_arp_udp_tcp(g_LocalMAC, g_LocalIP, 80);
 
   uint8_t gwip[4];
-  NET_ParseIP(gwip, DVA_GATEWAY_IP);
+  NET_StringToIP(gwip, DVA_GATEWAY_IP);
   client_set_gwip(gwip);
 
   return 0;

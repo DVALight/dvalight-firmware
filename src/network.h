@@ -7,8 +7,11 @@
 extern uint8_t g_LocalMAC[6], g_LocalIP[4];
 extern uint8_t g_RemoteMAC[6], g_RemoteIP[4];
 
-void NET_ParseMAC(uint8_t* mac, const char* macStr);
-void NET_ParseIP(uint8_t* ip, const char* ipStr);
+void NET_StringToMAC(uint8_t* mac, const char* macStr);
+void NET_StringToIP(uint8_t* ip, const char* ipStr);
+
+const char* NET_MACToString(const uint8_t* mac);
+const char* NET_IPToString(const uint8_t* ip);
 
 int NET_Init(void);
 
