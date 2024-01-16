@@ -37,9 +37,6 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
-  memcpy(NET_UDP, "Hello World!\r\n", 15);
-  NET_SendUDP(15);
-
   while (1)
   {
     uint16_t len = NET_PacketLoop();

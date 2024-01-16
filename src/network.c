@@ -18,7 +18,9 @@ SPI_HandleTypeDef hspi1 = {
 };
 
 uint8_t g_LocalMAC[6], g_LocalIP[4];
-uint8_t g_RemoteMAC[6], g_RemoteIP[4];
+uint8_t g_GatewayMAC[6], g_GatewayIP[4];
+
+uint8_t g_RemoteIP[4];
 
 void NET_StringToMAC(uint8_t* mac, const char* macStr)
 {
@@ -70,7 +72,7 @@ int NET_Init(void)
   NET_StringToMAC(g_LocalMAC, DVA_LOCAL_MAC);
   NET_StringToIP(g_LocalIP, DVA_LOCAL_IP);
 
-  NET_StringToMAC(g_RemoteMAC, DVA_REMOTE_MAC);
+  NET_StringToIP(g_GatewayIP, DVA_GATEWAY_IP);
   NET_StringToIP(g_RemoteIP, DVA_REMOTE_IP);
 
   ES_enc28j60SpiInit(&hspi1);
@@ -89,21 +91,48 @@ uint8_t NET[DVA_NETBUF_SIZE];
 
 void NET_SendUDP(uint16_t len)
 {
-  ES_send_udp_data2(NET, g_RemoteMAC, len, DVA_SPORT, g_RemoteIP, DVA_DPORT);
+  ES_send_udp_data2(NET, g_GatewayMAC, len, DVA_SPORT, g_RemoteIP, DVA_DPORT);
 }
+
+// 1. get gateway mac
+// 2. 
+
+static enum {
+  NET_INIT,
+  NET_GATEWAY_ARP_WAITING,
+  NET_READY,
+} NET_State = NET_INIT;
 
 // returns udp data length if its udp packet
 uint16_t NET_PacketLoop()
 {
+  if (NET_State == NET_INIT)
+  {
+    client_arp_whohas(NET, g_GatewayIP);
+    NET_State = NET_GATEWAY_ARP_WAITING;
+  }
+
   uint16_t plen = NET_ReceivePacket();
+
+  // ARP
   if (eth_type_is_arp_and_my_ip(NET, plen))
   {
     if (NET_ARP_IS_REQUEST())
     {
       make_arp_answer_from_request(NET);
     }
+    else if (NET_ARP_IS_REPLY())
+    {
+      if (!memcmp(&NET[ETH_ARP_SRC_IP_P], g_GatewayIP, 4))
+      {
+        memcpy(g_GatewayMAC, &NET[ETH_ARP_SRC_MAC_P], 6);
+        printf("gateway - %s\r\n", NET_MACToString(g_GatewayMAC));
+        NET_State = NET_READY;
+      }
+    }
   }
 
+  // IP
   if (eth_type_is_ip_and_my_ip(NET, plen))
   {
     // ICMP
@@ -111,9 +140,13 @@ uint16_t NET_PacketLoop()
     {
       make_echo_reply_from_request(NET, plen);
     }
+    // UDP
     else if (NET_PROTO_IS(IP_PROTO_UDP_V))
     {
-      return get_udp_data_len(NET);
+      if (NET_State == NET_READY)
+      {
+        return get_udp_data_len(NET);
+      }
     }
   }
 
