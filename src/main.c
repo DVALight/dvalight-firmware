@@ -13,28 +13,29 @@ void Failure_Hang_Loop(void)
   }
 }
 
-uint16_t packetloop(uint8_t* buf, uint16_t plen, uint16_t* dlen)
+// returns udp data length if its udp packet
+uint16_t packetloop()
 {
-  if (eth_type_is_arp_and_my_ip(buf, plen))
+  uint16_t plen = NET_ReceivePacket();
+  if (eth_type_is_arp_and_my_ip(NET_BUF, plen))
   {
-    if (buf[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
+    if (NET_BUF[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
     {
-      make_arp_answer_from_request(buf);
+      make_arp_answer_from_request(NET_BUF);
     }
   }
 
-  if (eth_type_is_ip_and_my_ip(buf, plen))
+  if (eth_type_is_ip_and_my_ip(NET_BUF, plen))
   {
     // ICMP
-    if (buf[IP_PROTO_P] == IP_PROTO_ICMP_V 
-      && buf[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
+    if (NET_BUF[IP_PROTO_P] == IP_PROTO_ICMP_V 
+      && NET_BUF[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
     {
-      make_echo_reply_from_request(buf, plen);
+      make_echo_reply_from_request(NET_BUF, plen);
     }
-    else if (buf[IP_PROTO_P] == IP_PROTO_UDP_V)
+    else if (NET_BUF[IP_PROTO_P] == IP_PROTO_UDP_V)
     {
-      *dlen = get_udp_data_len(buf);
-      return IP_HEADER_LEN + 8 + 14;
+      return get_udp_data_len(NET_BUF);
     }
   }
 
@@ -64,21 +65,13 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
-  // we also want resolve gateway and remote MACs with ARP requests
-  NET_SendUDP(g_RemoteIP, 61337, 1337, (const uint8_t*)"Hello World!\r\n", 15);
+  NET_SendUDP(g_RemoteIP, DVA_SPORT, DVA_DPORT, (const uint8_t*)"Hello World!\r\n", 15);
 
   while (1)
   {
-    // uint16_t len = 0;
-    // uint16_t pos = packetloop(g_NetBuf,
-    //   ES_enc28j60PacketReceive(sizeof(g_NetBuf), g_NetBuf), &len);
-    // if (!pos) continue;
-    // printf("udp pos %u len %u\r\n", pos, len);
-    // UART_HexDump(&g_NetBuf[pos], len, 8);
+    uint16_t len = packetloop();
+    if (!len) continue;
 
-    // if (g_NetBuf[pos] == 'A')
-    // {
-    //   make_udp_reply_from_request(g_NetBuf, (char*)"Hello World!\r\n", 15, 1337);
-    // }
+    printf("len %u\r\n", len);
   }
 }
