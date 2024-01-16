@@ -19,8 +19,11 @@ extern uint8_t NET[DVA_NETBUF_SIZE];
 #define NET_ARP_IS_REQUEST()  (NET[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
 #define NET_ARP_IS_REPLY()    (NET[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REPLY_L_V)
 
+extern uint16_t g_LocalDPort, g_RemoteSPort;
+
 #define NET_ReceivePacket() ES_enc28j60PacketReceive(DVA_NETBUF_SIZE, NET)
 void NET_SendUDP(uint16_t len);
+void NET_ReplyUDP(uint16_t len);
 
 // returns udp data length if its udp packet
 uint16_t NET_PacketLoop();

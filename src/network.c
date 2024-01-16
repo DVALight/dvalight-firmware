@@ -92,9 +92,16 @@ int NET_Init(void)
 
 uint8_t NET[DVA_NETBUF_SIZE];
 
+uint16_t g_LocalDPort, g_RemoteSPort;
+
 void NET_SendUDP(uint16_t len)
 {
   ES_send_udp_data2(NET, g_GatewayMAC, len, DVA_SPORT, g_RemoteIP, DVA_DPORT);
+}
+
+void NET_ReplyUDP(uint16_t len)
+{
+  ES_send_udp_data2(NET, g_GatewayMAC, len, g_LocalDPort, g_RemoteIP, g_RemoteSPort);
 }
 
 // 1. get gateway mac
@@ -114,8 +121,10 @@ uint16_t NET_PacketLoop()
   {
     if (NET_State == NET_INIT)
     {
-      client_arp_whohas(NET, g_GatewayIP);
-      NET_State = NET_GATEWAY_ARP_WAITING;
+      // client_arp_whohas(NET, g_GatewayIP);
+      // NET_State = NET_GATEWAY_ARP_WAITING;
+      NET_StringToMAC(g_GatewayMAC, DVA_GATEWAY_MAC);
+      NET_State = NET_READY;
     }
   }
 
@@ -151,8 +160,11 @@ uint16_t NET_PacketLoop()
     // UDP
     else if (NET_PROTO_IS(IP_PROTO_UDP_V))
     {
-      if (NET_State == NET_READY)
+      if (NET_State == NET_READY && !memcmp(&NET[IP_SRC_IP_P], g_RemoteIP, 4))
       {
+        g_LocalDPort = (NET[UDP_DST_PORT_H_P]<<8)|(NET[UDP_DST_PORT_L_P]);
+        g_RemoteSPort = (NET[UDP_SRC_PORT_H_P]<<8)|(NET[UDP_SRC_PORT_L_P]);
+        printf("g_RemoteSPort %u\r\n", g_RemoteSPort);
         return get_udp_data_len(NET);
       }
     }

@@ -23,12 +23,13 @@ set(HEADERS
 
 # set(DVA_LOCAL_MAC   "$ENV{LOCAL_MAC}"   CACHE INTERNAL "MAC for DVALight device")
 set(DVA_LOCAL_MAC   "02:03:04:69:69:69"   CACHE INTERNAL "MAC for DVALight device")
-set(DVA_LOCAL_IP    "192.168.100.169"   CACHE INTERNAL "IPv4 address for DVALight device")
-set(DVA_GATEWAY_IP  "192.168.100.1"     CACHE INTERNAL "gateway IPv4 address")
-set(DVA_REMOTE_IP   "$ENV{LOCAL_IP}"    CACHE INTERNAL "back-end IPv4 address")
-set(DVA_SPORT       "61337"             CACHE INTERNAL "DVALight device UDP source port")
-set(DVA_DPORT       "1337"              CACHE INTERNAL "back-end UDP port")
-set(DVA_NETBUF_SIZE "1536"              CACHE INTERNAL "buffer memory size for network packets")
+set(DVA_LOCAL_IP    "192.168.100.169"     CACHE INTERNAL "IPv4 address for DVALight device")
+set(DVA_GATEWAY_IP  "192.168.100.1"       CACHE INTERNAL "gateway IPv4 address")
+set(DVA_GATEWAY_MAC "$ENV{LOCAL_MAC}"     CACHE INTERNAL "MAC for gateway")
+set(DVA_REMOTE_IP   "$ENV{LOCAL_IP}"      CACHE INTERNAL "back-end IPv4 address")
+set(DVA_SPORT       "61337"               CACHE INTERNAL "DVALight device UDP source port")
+set(DVA_DPORT       "1337"                CACHE INTERNAL "back-end UDP port")
+set(DVA_NETBUF_SIZE "1536"                CACHE INTERNAL "buffer memory size for network packets")
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
@@ -50,6 +51,7 @@ target_compile_definitions(dvalight-firmware PRIVATE
   DVA_LOCAL_MAC="${DVA_LOCAL_MAC}"
   DVA_LOCAL_IP="${DVA_LOCAL_IP}"
   DVA_GATEWAY_IP="${DVA_GATEWAY_IP}"
+  DVA_GATEWAY_MAC="${DVA_GATEWAY_MAC}"
   DVA_REMOTE_MAC="${DVA_REMOTE_MAC}"
   DVA_REMOTE_IP="${DVA_REMOTE_IP}"
   DVA_SPORT=${DVA_SPORT}
