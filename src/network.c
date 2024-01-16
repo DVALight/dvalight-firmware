@@ -74,3 +74,31 @@ void NET_SendUDP(uint16_t len)
 {
   ES_send_udp_data2(NET, g_RemoteMAC, len, DVA_SPORT, g_RemoteIP, DVA_DPORT);
 }
+
+// returns udp data length if its udp packet
+uint16_t NET_PacketLoop()
+{
+  uint16_t plen = NET_ReceivePacket();
+  if (eth_type_is_arp_and_my_ip(NET, plen))
+  {
+    if (NET_ARP_IS_REQUEST())
+    {
+      make_arp_answer_from_request(NET);
+    }
+  }
+
+  if (eth_type_is_ip_and_my_ip(NET, plen))
+  {
+    // ICMP
+    if (NET_PROTO_IS(IP_PROTO_ICMP_V) && NET[ICMP_TYPE_P] == ICMP_TYPE_ECHOREQUEST_V)
+    {
+      make_echo_reply_from_request(NET, plen);
+    }
+    else if (NET_PROTO_IS(IP_PROTO_UDP_V))
+    {
+      return get_udp_data_len(NET);
+    }
+  }
+
+  return 0;
+}

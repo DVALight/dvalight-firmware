@@ -21,4 +21,7 @@ extern uint8_t NET[DVA_NETBUF_SIZE];
 #define NET_ReceivePacket() ES_enc28j60PacketReceive(DVA_NETBUF_SIZE, NET)
 void NET_SendUDP(uint16_t len);
 
+// returns udp data length if its udp packet
+uint16_t NET_PacketLoop();
+
 #endif
