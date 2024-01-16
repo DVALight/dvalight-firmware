@@ -50,11 +50,11 @@ int NET_Init(void)
     return -1;
   }
 
-  NET_ParseMAC(g_LocalMAC, LOCAL_MAC_STR);
-  NET_ParseIP(g_LocalIP, LOCAL_IP_STR);
+  NET_ParseMAC(g_LocalMAC, DVA_LOCAL_MAC);
+  NET_ParseIP(g_LocalIP, DVA_LOCAL_IP);
 
-  NET_ParseMAC(g_RemoteMAC, REMOTE_MAC_STR);
-  NET_ParseIP(g_RemoteIP, REMOTE_IP_STR);
+  NET_ParseMAC(g_RemoteMAC, DVA_REMOTE_MAC);
+  NET_ParseIP(g_RemoteIP, DVA_REMOTE_IP);
 
   ES_enc28j60SpiInit(&hspi1);
   ES_enc28j60Init(g_LocalMAC);
@@ -62,7 +62,7 @@ int NET_Init(void)
   ES_init_ip_arp_udp_tcp(g_LocalMAC, g_LocalIP, 80);
 
   uint8_t gwip[4];
-  NET_ParseIP(gwip, "192.168.100.1");
+  NET_ParseIP(gwip, DVA_GATEWAY_IP);
   client_set_gwip(gwip);
 
   return 0;

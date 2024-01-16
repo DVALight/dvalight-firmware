@@ -17,10 +17,18 @@ set(SOURCES
 set(HEADERS
     src/stm32f4xx_hal_conf.h
     src/hal_isr.h
-    src/dva.h
     src/uart.h
     src/network.h
 )
+
+set(DVA_LOCAL_MAC   "02:03:04:d4:c8:10" CACHE INTERNAL "MAC for DVALight device")
+set(DVA_LOCAL_IP    "192.168.100.169"   CACHE INTERNAL "IPv4 address for DVALight device")
+set(DVA_GATEWAY_IP  "192.168.100.1"     CACHE INTERNAL "gateway IPv4 address")
+set(DVA_REMOTE_MAC  "$ENV{LOCAL_MAC}"   CACHE INTERNAL "back-end MAC address")
+set(DVA_REMOTE_IP   "$ENV{LOCAL_IP}"    CACHE INTERNAL "back-end IPv4 address")
+set(DVA_SPORT       "61337"             CACHE INTERNAL "DVALight device UDP source port")
+set(DVA_DPORT       "1337"              CACHE INTERNAL "back-end UDP port")
+set(DVA_NETBUF_SIZE "1536"              CACHE INTERNAL "buffer memory size for network packets")
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
@@ -39,10 +47,14 @@ add_subdirectory(../stm32-enc28j60 stm32-enc28j60)
 add_executable(dvalight-firmware ${SOURCES} ${HEADERS})
 # we do this to hide sensitive information like MAC address
 target_compile_definitions(dvalight-firmware PRIVATE
-    LOCAL_MAC_STR="02:03:04:d4:c8:10"
-    LOCAL_IP_STR="192.168.100.169"
-    REMOTE_MAC_STR="$ENV{LOCAL_MAC}"
-    REMOTE_IP_STR="$ENV{LOCAL_IP}" 
+  DVA_LOCAL_MAC="${DVA_LOCAL_MAC}"
+  DVA_LOCAL_IP="${DVA_LOCAL_IP}"
+  DVA_GATEWAY_IP="${DVA_GATEWAY_IP}"
+  DVA_REMOTE_MAC="${DVA_REMOTE_MAC}"
+  DVA_REMOTE_IP="${DVA_REMOTE_IP}"
+  DVA_SPORT=${DVA_SPORT}
+  DVA_DPORT=${DVA_DPORT}
+  DVA_NETBUF_SIZE=${DVA_NETBUF_SIZE}
 )
 
 target_include_directories(dvalight-firmware PRIVATE
