@@ -58,6 +58,11 @@ int main(void)
 
   printf("Init OK\r\n");
 
+  // our goals for this firmware
+  // 1. send UDP request server
+  // 2. wait for response
+  // 3. process response, perform actions described in response
+  // 4. repeat
   while (1)
   {
     uint16_t len = 0;
