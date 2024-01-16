@@ -19,7 +19,6 @@ extern uint8_t NET[DVA_NETBUF_SIZE];
 #define NET_ARP_IS_REQUEST()  (NET[ETH_ARP_OPCODE_L_P] == ETH_ARP_OPCODE_REQ_L_V)
 
 #define NET_ReceivePacket() ES_enc28j60PacketReceive(DVA_NETBUF_SIZE, NET)
-void NET_SendUDP(uint8_t* ip, uint16_t sport, uint16_t dport,
-  const uint8_t* payload, unsigned size);
+void NET_SendUDP(uint16_t len);
 
 #endif

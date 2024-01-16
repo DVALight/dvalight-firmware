@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "stm32f4xx_hal.h"
 #include "network.h"
 #include "uart.h"
@@ -64,7 +65,8 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
-  NET_SendUDP(g_RemoteIP, DVA_SPORT, DVA_DPORT, (const uint8_t*)"Hello World!\r\n", 15);
+  memcpy(NET_UDP, "Hello World!\r\n", 15);
+  NET_SendUDP(15);
 
   while (1)
   {
