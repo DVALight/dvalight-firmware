@@ -1,8 +1,9 @@
 #ifndef __NETWORK_H
 #define __NETWORK_H
 
-#include <stdint.h>
+#include "net.h"
 #include "ip_arp_udp_tcp.h"
+#include <stdint.h>
 
 void NET_StringToMAC(uint8_t* mac, const char* macStr);
 void NET_StringToIP(uint8_t* ip, const char* ipStr);

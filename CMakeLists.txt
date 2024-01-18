@@ -11,7 +11,7 @@ set(SOURCES
     src/hal_msp.c
     src/uart.c
     src/network.c
-    src/dva.h
+    src/dva.c
     src/main.c
 )
 
@@ -32,6 +32,9 @@ set(DVA_REMOTE_IP   "$ENV{LOCAL_IP}"      CACHE INTERNAL "back-end IPv4 address"
 set(DVA_SPORT       "61337"               CACHE INTERNAL "DVALight device UDP source port")
 set(DVA_DPORT       "1337"                CACHE INTERNAL "back-end UDP port")
 set(DVA_NETBUF_SIZE "1536"                CACHE INTERNAL "buffer memory size for network packets")
+
+set(DVA_DELAY       "500"                 CACHE INTERNAL "delay between DVA requests")
+set(DVA_DEVICE_ID   "1"                   CACHE INTERNAL "device ID for DVA protocol")
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
@@ -59,6 +62,9 @@ target_compile_definitions(dvalight-firmware PRIVATE
   DVA_SPORT=${DVA_SPORT}
   DVA_DPORT=${DVA_DPORT}
   DVA_NETBUF_SIZE=${DVA_NETBUF_SIZE}
+  
+  DVA_DELAY=${DVA_DELAY}
+  DVA_DEVICE_ID=${DVA_DEVICE_ID}
 )
 
 target_include_directories(dvalight-firmware PRIVATE
