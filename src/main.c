@@ -39,8 +39,8 @@ int main(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
   HAL_GPIO_Init(GPIOD, &(GPIO_InitTypeDef) {
     .Pin = GPIO_PIN_0,
-    .Mode = GPIO_MODE_OUTPUT_PP,
-    .Pull = GPIO_PULLUP,
+    .Mode = GPIO_MODE_OUTPUT_OD,
+    .Pull = GPIO_NOPULL,
     .Speed = GPIO_SPEED_LOW
   });
 
@@ -57,7 +57,7 @@ int main(void)
 
       // set LED according to state
       HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0,
-        res->state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+        res->state ? GPIO_PIN_RESET : GPIO_PIN_SET);
     }
     else if (NET_IsReady())
     {
