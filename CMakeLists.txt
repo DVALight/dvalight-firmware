@@ -11,6 +11,7 @@ set(SOURCES
     src/hal_msp.c
     src/uart.c
     src/network.c
+    src/dva.h
     src/main.c
 )
 
@@ -19,6 +20,7 @@ set(HEADERS
     src/hal_isr.h
     src/uart.h
     src/network.h
+    src/dva.h
 )
 
 # set(DVA_LOCAL_MAC   "$ENV{LOCAL_MAC}"   CACHE INTERNAL "MAC for DVALight device")
