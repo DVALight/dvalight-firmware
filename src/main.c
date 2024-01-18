@@ -3,9 +3,7 @@
 #include "stm32f4xx_hal.h"
 #include "network.h"
 #include "uart.h"
-#include "enc28j60.h"
-#include "EtherShield.h"
-#include "ip_arp_udp_tcp.h"
+#include "dva.h"
 
 void Failure_Hang_Loop(void)
 {
@@ -37,16 +35,22 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
+  uint32_t lastDVARequest = HAL_GetTick();
   while (1)
   {
     uint16_t len = NET_PacketLoop();
-    if (!len) continue;
-    printf("len %u\r\n", len);
-
-    if (NET_IsReady())
+    if (len)
     {
-      memcpy(NET_UDP, "Hello World!\r\n", 15);
-      NET_ReplyUDP(15);
+      // we received UDP packet
+    }
+    else if (NET_IsReady())
+    {
+      uint32_t tick = HAL_GetTick();
+      if (tick > lastDVARequest + DVA_DELAY)
+      {
+        DVA_MakeRequest();
+        lastDVARequest = tick;
+      }
     }
   }
 }
