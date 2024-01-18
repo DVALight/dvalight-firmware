@@ -15,7 +15,7 @@ void Failure_Hang_Loop(void)
 int main(void)
 {
   HAL_Init();
-  
+
   if (UART_Init())
   {
     Failure_Hang_Loop();
@@ -35,13 +35,29 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
+  // setup LED
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  HAL_GPIO_Init(GPIOD, &(GPIO_InitTypeDef) {
+    .Pin = GPIO_PIN_0,
+    .Mode = GPIO_MODE_OUTPUT_PP,
+    .Pull = GPIO_PULLUP,
+    .Speed = GPIO_SPEED_LOW
+  });
+
   uint32_t lastDVARequest = HAL_GetTick();
   while (1)
   {
     uint16_t len = NET_PacketLoop();
     if (len)
     {
-      // we received UDP packet
+      struct DVAResponse* res = DVA_ReadResponse();
+      if (!res) continue;
+      
+      printf("DVA response: state %u\r\n", res->state);
+
+      // set LED according to state
+      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0,
+        res->state ? GPIO_PIN_SET : GPIO_PIN_RESET);
     }
     else if (NET_IsReady())
     {

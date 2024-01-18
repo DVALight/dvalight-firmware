@@ -9,3 +9,12 @@ void DVA_MakeRequest(void)
 
   NET_SendUDP(sizeof(struct DVARequest));
 }
+
+struct DVAResponse* DVA_ReadResponse(void)
+{
+  struct DVAResponse* res = (struct DVAResponse*)NET_UDP;
+  if (res->magic != DVA_MAGIC || res->deviceId != DVA_DEVICE_ID)
+    return NULL;
+  
+  return res;
+}

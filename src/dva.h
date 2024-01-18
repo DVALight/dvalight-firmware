@@ -10,6 +10,14 @@ struct DVARequest {
   uint32_t deviceId;
 } __attribute__((packed));
 
+struct DVAResponse {
+  uint64_t magic;
+  uint32_t deviceId;
+  uint8_t state;
+} __attribute__((packed));
+
+
 void DVA_MakeRequest(void);
+struct DVAResponse* DVA_ReadResponse(void); // returns NULL if not valid response
 
 #endif
