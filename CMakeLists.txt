@@ -78,6 +78,7 @@ target_link_libraries(dvalight-firmware
     HAL::STM32::F4::UART
     HAL::STM32::F4::SPI
     HAL::STM32::F4::TIM
+    HAL::STM32::F4::TIMEx
     HAL::STM32::F4::CORTEX
     CMSIS::STM32::F401VE
     STM32::NoSys

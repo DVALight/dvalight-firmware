@@ -12,7 +12,16 @@ void Failure_Hang_Loop(void)
   }
 }
 
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim2 = {
+  .Instance = TIM2,
+  .Init.Prescaler = 0,
+  .Init.CounterMode = TIM_COUNTERMODE_UP,
+  .Init.Period = 4294967295,
+  .Init.ClockDivision = TIM_CLOCKDIVISION_DIV1,
+  .Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE
+};
+
+extern void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim);
 
 int main(void)
 {
@@ -47,9 +56,19 @@ int main(void)
   });
 
   // PWM
-
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-  //TIM2->CCR1 = 65535 / 2;
+  HAL_TIM_PWM_Init(&htim2);
+  HAL_TIMEx_MasterConfigSynchronization(&htim2, &(TIM_MasterConfigTypeDef) {
+    .MasterOutputTrigger = TIM_TRGO_RESET,
+    .MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE
+  });
+  // A0 - TIM2_CH1
+  HAL_TIM_PWM_ConfigChannel(&htim2, &(TIM_OC_InitTypeDef) {
+    .OCMode = TIM_OCMODE_PWM1,
+    .Pulse = 0,
+    .OCPolarity = TIM_OCPOLARITY_HIGH,
+    .OCFastMode = TIM_OCFAST_DISABLE
+  }, TIM_CHANNEL_1);
+  HAL_TIM_MspPostInit(&htim2);
 
   uint32_t lastDVARequest = HAL_GetTick();
   while (1)
