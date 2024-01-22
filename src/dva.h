@@ -13,6 +13,7 @@ struct DVARequest {
 struct DVAResponse {
   uint64_t magic;
   uint32_t deviceId;
+  uint32_t color;
   uint8_t state;
 } __attribute__((packed));
 
