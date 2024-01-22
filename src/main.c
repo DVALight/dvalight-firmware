@@ -44,6 +44,9 @@ int main(void)
     .Speed = GPIO_SPEED_LOW
   });
 
+  // PWM
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
   uint32_t lastDVARequest = HAL_GetTick();
   while (1)
   {
