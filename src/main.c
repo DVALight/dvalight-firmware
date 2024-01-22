@@ -70,6 +70,10 @@ int main(void)
   }, TIM_CHANNEL_1);
   HAL_TIM_MspPostInit(&htim2);
 
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  TIM2->CCR1 = 65535 / 2;
+
+
   uint32_t lastDVARequest = HAL_GetTick();
   while (1)
   {
