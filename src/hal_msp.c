@@ -56,3 +56,35 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
   }
 }
+
+void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* htim)
+{
+  if (htim->Instance == TIM2)
+  {
+    __HAL_RCC_TIM2_CLK_ENABLE();
+  }
+}
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
+{
+  if (htim->Instance == TIM2)
+  {
+    // A0 - TIM2_CH1
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
+      .Pin = GPIO_PIN_0,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_LOW,
+      .Alternate = GPIO_AF1_TIM2
+    });
+  }
+}
+
+void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* htim)
+{
+  if (htim->Instance == TIM2)
+  {
+    __HAL_RCC_TIM2_CLK_DISABLE();
+  }
+}

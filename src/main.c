@@ -12,6 +12,8 @@ void Failure_Hang_Loop(void)
   }
 }
 
+TIM_HandleTypeDef htim2;
+
 int main(void)
 {
   HAL_Init();
@@ -45,7 +47,9 @@ int main(void)
   });
 
   // PWM
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  //TIM2->CCR1 = 65535 / 2;
 
   uint32_t lastDVARequest = HAL_GetTick();
   while (1)
