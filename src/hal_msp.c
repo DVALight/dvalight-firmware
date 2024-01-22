@@ -69,10 +69,20 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
 {
   if (htim->Instance == TIM2)
   {
-    // A0 - TIM2_CH1
+    // PA0, PA2 - TIM2_CH1, TIM2_CH3
     __HAL_RCC_GPIOA_CLK_ENABLE();
     HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
-      .Pin = GPIO_PIN_0,
+      .Pin = GPIO_PIN_0|GPIO_PIN_2,
+      .Mode = GPIO_MODE_AF_PP,
+      .Pull = GPIO_NOPULL,
+      .Speed = GPIO_SPEED_FREQ_LOW,
+      .Alternate = GPIO_AF1_TIM2
+    });
+    
+    // PB3 - TIM2_CH2
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    HAL_GPIO_Init(GPIOB, &(GPIO_InitTypeDef) {
+      .Pin = GPIO_PIN_3,
       .Mode = GPIO_MODE_AF_PP,
       .Pull = GPIO_NOPULL,
       .Speed = GPIO_SPEED_FREQ_LOW,

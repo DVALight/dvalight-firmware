@@ -23,6 +23,32 @@ TIM_HandleTypeDef htim2 = {
 
 extern void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim);
 
+void PWM_Init()
+{
+  // PWM
+  HAL_TIM_PWM_Init(&htim2);
+  HAL_TIMEx_MasterConfigSynchronization(&htim2, &(TIM_MasterConfigTypeDef) {
+    .MasterOutputTrigger = TIM_TRGO_RESET,
+    .MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE
+  });
+  
+  const TIM_OC_InitTypeDef ocConfig = {
+    .OCMode = TIM_OCMODE_PWM1,
+    .Pulse = 0,
+    .OCPolarity = TIM_OCPOLARITY_HIGH,
+    .OCFastMode = TIM_OCFAST_DISABLE
+  };
+  HAL_TIM_PWM_ConfigChannel(&htim2, &ocConfig, TIM_CHANNEL_1); // PA0 - TIM2_CH1
+  HAL_TIM_PWM_ConfigChannel(&htim2, &ocConfig, TIM_CHANNEL_2); // PB3 - TIM2_CH2
+  HAL_TIM_PWM_ConfigChannel(&htim2, &ocConfig, TIM_CHANNEL_3); // PA2 - TIM2_CH3
+
+  HAL_TIM_MspPostInit(&htim2);
+
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+}
+
 int main(void)
 {
   HAL_Init();
@@ -46,32 +72,10 @@ int main(void)
   // 3. process response, perform actions described in response
   // 4. repeat
 
-  // setup LED
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  HAL_GPIO_Init(GPIOD, &(GPIO_InitTypeDef) {
-    .Pin = GPIO_PIN_0,
-    .Mode = GPIO_MODE_OUTPUT_OD,
-    .Pull = GPIO_NOPULL,
-    .Speed = GPIO_SPEED_LOW
-  });
-
-  // PWM
-  HAL_TIM_PWM_Init(&htim2);
-  HAL_TIMEx_MasterConfigSynchronization(&htim2, &(TIM_MasterConfigTypeDef) {
-    .MasterOutputTrigger = TIM_TRGO_RESET,
-    .MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE
-  });
-  // A0 - TIM2_CH1
-  HAL_TIM_PWM_ConfigChannel(&htim2, &(TIM_OC_InitTypeDef) {
-    .OCMode = TIM_OCMODE_PWM1,
-    .Pulse = 0,
-    .OCPolarity = TIM_OCPOLARITY_HIGH,
-    .OCFastMode = TIM_OCFAST_DISABLE
-  }, TIM_CHANNEL_1);
-  HAL_TIM_MspPostInit(&htim2);
-
-  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-  TIM2->CCR1 = 65535 / 2;
+  PWM_Init();
+  TIM2->CCR1 = 65535;
+  TIM2->CCR2 = 0;
+  TIM2->CCR3 = 65535;
 
 
   uint32_t lastDVARequest = HAL_GetTick();
