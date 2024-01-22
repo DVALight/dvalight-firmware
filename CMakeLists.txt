@@ -33,7 +33,7 @@ set(DVA_SPORT       "61337"               CACHE INTERNAL "DVALight device UDP so
 set(DVA_DPORT       "1337"                CACHE INTERNAL "back-end UDP port")
 set(DVA_NETBUF_SIZE "1536"                CACHE INTERNAL "buffer memory size for network packets")
 
-set(DVA_DELAY       "500"                 CACHE INTERNAL "delay between DVA requests")
+set(DVA_DELAY       "250"                 CACHE INTERNAL "delay between DVA requests")
 set(DVA_DEVICE_ID   "1"                   CACHE INTERNAL "device ID for DVA protocol")
 
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)

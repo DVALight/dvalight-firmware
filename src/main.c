@@ -49,6 +49,13 @@ void PWM_Init()
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 }
 
+void RGB_Write(uint16_t r, uint16_t g, uint16_t b)
+{
+  TIM2->CCR1 = r << 8;
+  TIM2->CCR2 = g << 8;
+  TIM2->CCR3 = b << 8;
+}
+
 int main(void)
 {
   HAL_Init();
@@ -73,9 +80,7 @@ int main(void)
   // 4. repeat
 
   PWM_Init();
-  TIM2->CCR1 = 65535;
-  TIM2->CCR2 = 0;
-  TIM2->CCR3 = 65535;
+  RGB_Write(0, 0, 0);
 
 
   uint32_t lastDVARequest = HAL_GetTick();
@@ -90,8 +95,14 @@ int main(void)
       printf("DVA response: state %u\r\n", res->state);
 
       // set LED according to state
-      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_0,
-        res->state ? GPIO_PIN_RESET : GPIO_PIN_SET);
+      if (res->state)
+      {
+        RGB_Write((res->color >> 16) & 0xFF, (res->color >> 8) & 0xFF, res->color & 0xFF);  
+      }
+      else
+      {
+        RGB_Write(0, 0, 0);
+      }
     }
     else if (NET_IsReady())
     {
